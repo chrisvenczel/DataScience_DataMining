@@ -1,0 +1,39 @@
+sns.boxplot(data=education_key_indicators, x='hdi_group', y='school_enrollment_primary_percentage_gross')
+
+sns.boxplot(data=education_key_indicators, x='hdi_group', y='school_enrollment_secondary_percentage_gross')
+
+
+
+#
+# combine key indicators and population dataframe
+
+population = pd.read_csv("data/population")
+
+population_key_indicators = keyIndicators.merge(population, on=['country_code', 'yr'])
+
+# print out the number of missing values per column
+
+population_key_indicators.isnull().sum().sort_values(ascending=False)
+
+population_key_indicators['human_development_index'] = population_key_indicators['human_development_index'].astype(float)
+
+
+
+
+for i in range(len(population_key_indicators['hdi_group'])):
+    if population_key_indicators['human_development_index'][i] >= 0.8:
+        population_key_indicators['hdi_group'][i] = 'very high'
+    elif population_key_indicators['human_development_index'][i] >= 0.7 and population_key_indicators['human_development_index'][i] <= 0.79:
+        population_key_indicators['hdi_group'][i] = 'high'
+    elif population_key_indicators['human_development_index'][i] >= 0.55 and population_key_indicators['human_development_index'][i] <= 0.69:
+        population_key_indicators['hdi_group'][i] = 'medium'
+    else:
+        population_key_indicators['hdi_group'][i] = 'low'
+
+#
+
+sns.boxplot(data=population_key_indicators, x='hdi_group', y='percent_demographics_in_rural')
+
+sns.boxplot(data=population_key_indicators, x='hdi_group', y='percent_population_growth')
+
+
